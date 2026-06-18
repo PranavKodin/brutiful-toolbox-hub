@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/hooks/use-auth";
-import { tools } from "@/lib/tools-data";
+import { useTools } from "@/hooks/use-tools";
 import { toast } from "sonner";
-import { LogOut, Save, User as UserIcon } from "lucide-react";
+import { LogOut, Save, User as UserIcon, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -18,7 +18,8 @@ export const Route = createFileRoute("/profile")({
 });
 
 function ProfilePage() {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, isAdmin, signOut } = useAuth();
+  const { tools } = useTools();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -90,12 +91,19 @@ function ProfilePage() {
                 <div className="font-mono text-xs">{user.email}</div>
               </div>
             </div>
-            <button
-              onClick={handleSignOut}
-              className="border-brutal bg-foreground text-background px-4 py-2 font-bold uppercase shadow-brutal-sm hover-lift inline-flex items-center gap-2"
-            >
-              <LogOut className="size-4" /> Sign out
-            </button>
+            <div className="flex flex-wrap gap-2">
+              {isAdmin && (
+                <Link to="/admin" className="border-brutal bg-brand-yellow px-4 py-2 font-bold uppercase shadow-brutal-sm hover-lift inline-flex items-center gap-2">
+                  <Shield className="size-4" /> Admin panel
+                </Link>
+              )}
+              <button
+                onClick={handleSignOut}
+                className="border-brutal bg-foreground text-background px-4 py-2 font-bold uppercase shadow-brutal-sm hover-lift inline-flex items-center gap-2"
+              >
+                <LogOut className="size-4" /> Sign out
+              </button>
+            </div>
           </div>
         </div>
       </section>

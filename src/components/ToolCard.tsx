@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Download, Heart } from "lucide-react";
+import { ArrowRight, Github, Heart } from "lucide-react";
 import * as Icons from "lucide-react";
 import { colorClass, type Tool } from "@/lib/tools-data";
 import { useFavorite } from "@/hooks/use-favorite";
@@ -41,13 +41,17 @@ export function ToolCard({ tool }: { tool: Tool }) {
           >
             DETAILS <ArrowRight className="size-4" />
           </Link>
-          <a
-            href={tool.downloadUrl}
-            className="border-brutal bg-foreground text-background px-3 py-2 font-bold uppercase text-sm shadow-brutal-sm hover-lift inline-flex items-center justify-center gap-2"
-            aria-label={`Download ${tool.name}`}
-          >
-            <Download className="size-4" />
-          </a>
+          {tool.githubUrl && (
+            <a
+              href={tool.githubUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="border-brutal bg-foreground text-background px-3 py-2 font-bold uppercase text-sm shadow-brutal-sm hover-lift inline-flex items-center justify-center gap-2"
+              aria-label={`${tool.name} on GitHub`}
+            >
+              <Github className="size-4" />
+            </a>
+          )}
         </div>
       </div>
     </article>

@@ -7,13 +7,15 @@ export interface Tool {
   version: string;
   size: string;
   platform: string[];
-  downloadUrl: string;
+  githubUrl?: string;
   releaseDate: string;
   color: "yellow" | "pink" | "blue" | "green" | "orange";
   icon: string;
   features: string[];
   changelog: { version: string; date: string; notes: string[] }[];
   requirements: string[];
+  featured?: boolean;
+  order?: number;
 }
 
 export const tools: Tool[] = [
@@ -27,7 +29,7 @@ export const tools: Tool[] = [
     version: "2.1.0",
     size: "4.2 MB",
     platform: ["macOS", "Windows", "Linux"],
-    downloadUrl: "#",
+    githubUrl: "https://github.com/example/PLACEHOLDER",
     releaseDate: "2026-05-12",
     color: "yellow",
     icon: "Ruler",
@@ -53,7 +55,7 @@ export const tools: Tool[] = [
     version: "1.4.2",
     size: "7.8 MB",
     platform: ["macOS", "Windows"],
-    downloadUrl: "#",
+    githubUrl: "https://github.com/example/PLACEHOLDER",
     releaseDate: "2026-04-22",
     color: "pink",
     icon: "Clipboard",
@@ -73,7 +75,7 @@ export const tools: Tool[] = [
     version: "3.0.1",
     size: "12.4 MB",
     platform: ["macOS", "Windows", "Linux", "Web"],
-    downloadUrl: "#",
+    githubUrl: "https://github.com/example/PLACEHOLDER",
     releaseDate: "2026-06-01",
     color: "blue",
     icon: "Braces",
@@ -93,7 +95,7 @@ export const tools: Tool[] = [
     version: "1.2.0",
     size: "9.1 MB",
     platform: ["macOS", "Windows"],
-    downloadUrl: "#",
+    githubUrl: "https://github.com/example/PLACEHOLDER",
     releaseDate: "2026-03-18",
     color: "green",
     icon: "Image",
@@ -113,7 +115,7 @@ export const tools: Tool[] = [
     version: "2.3.4",
     size: "5.6 MB",
     platform: ["macOS", "Windows"],
-    downloadUrl: "#",
+    githubUrl: "https://github.com/example/PLACEHOLDER",
     releaseDate: "2026-05-30",
     color: "orange",
     icon: "ShieldOff",
@@ -133,7 +135,7 @@ export const tools: Tool[] = [
     version: "0.9.1",
     size: "3.2 MB",
     platform: ["Web"],
-    downloadUrl: "#",
+    githubUrl: "https://github.com/example/PLACEHOLDER",
     releaseDate: "2026-06-10",
     color: "yellow",
     icon: "Code2",
@@ -153,7 +155,7 @@ export const tools: Tool[] = [
     version: "1.1.0",
     size: "6.3 MB",
     platform: ["macOS", "Web"],
-    downloadUrl: "#",
+    githubUrl: "https://github.com/example/PLACEHOLDER",
     releaseDate: "2026-04-04",
     color: "pink",
     icon: "Palette",
@@ -173,7 +175,7 @@ export const tools: Tool[] = [
     version: "1.0.5",
     size: "4.8 MB",
     platform: ["macOS", "Windows", "Web"],
-    downloadUrl: "#",
+    githubUrl: "https://github.com/example/PLACEHOLDER",
     releaseDate: "2026-05-20",
     color: "blue",
     icon: "FileText",
