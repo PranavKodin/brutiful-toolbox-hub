@@ -40,13 +40,13 @@ function ToolDetail() {
   }
   const toolData: Tool = tool;
 
-  const Icon = (Icons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[tool.icon] ?? Icons.Box;
-  const related = tools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, 3);
-  const ghRepo = tool.githubUrl?.replace(/^https?:\/\/github\.com\//, "").replace(/\/$/, "");
+  const Icon = (Icons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[toolData.icon] ?? Icons.Box;
+  const related = tools.filter((t) => t.category === toolData.category && t.slug !== toolData.slug).slice(0, 3);
+  const ghRepo = toolData.githubUrl?.replace(/^https?:\/\/github\.com\//, "").replace(/\/$/, "");
 
   return (
     <>
-      <section className={`${colorClass[tool.color]} border-b-[3px] border-foreground`}>
+      <section className={`${colorClass[toolData.color]} border-b-[3px] border-foreground`}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
           <Link to="/tools" className="inline-flex items-center gap-2 font-bold uppercase text-sm hover:underline mb-6">
             <ArrowLeft className="size-4" /> Back to all tools
@@ -58,18 +58,18 @@ function ToolDetail() {
                   <Icon className="size-10" />
                 </div>
                 <div>
-                  <div className="font-mono text-xs uppercase">{tool.category}</div>
-                  <h1 className="text-4xl md:text-6xl">{tool.name}</h1>
+                  <div className="font-mono text-xs uppercase">{toolData.category}</div>
+                  <h1 className="text-4xl md:text-6xl">{toolData.name}</h1>
                 </div>
               </div>
-              <p className="text-xl md:text-2xl font-display mt-4">{tool.tagline}</p>
-              <p className="mt-4 max-w-2xl text-lg font-medium">{tool.description}</p>
+              <p className="text-xl md:text-2xl font-display mt-4">{toolData.tagline}</p>
+              <p className="mt-4 max-w-2xl text-lg font-medium">{toolData.description}</p>
             </div>
             <aside className="lg:col-span-4 border-brutal bg-background shadow-brutal-lg p-6">
               <div className="font-display text-sm mb-4">Get it</div>
-              {tool.githubUrl ? (
+              {toolData.githubUrl ? (
                 <a
-                  href={tool.githubUrl}
+                  href={toolData.githubUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full border-brutal bg-foreground text-background px-4 py-3 font-bold uppercase shadow-brutal-sm hover-lift inline-flex items-center justify-between mb-3"
@@ -83,15 +83,15 @@ function ToolDetail() {
               <dl className="grid grid-cols-2 gap-3 text-sm">
                 <div className="border-brutal bg-card p-3">
                   <dt className="font-mono text-xs uppercase flex items-center gap-1"><Tag className="size-3" /> Version</dt>
-                  <dd className="font-display mt-1">{tool.version}</dd>
+                  <dd className="font-display mt-1">{toolData.version}</dd>
                 </div>
                 <div className="border-brutal bg-card p-3">
                   <dt className="font-mono text-xs uppercase flex items-center gap-1"><HardDrive className="size-3" /> Size</dt>
-                  <dd className="font-display mt-1">{tool.size}</dd>
+                  <dd className="font-display mt-1">{toolData.size}</dd>
                 </div>
                 <div className="border-brutal bg-card p-3 col-span-2">
                   <dt className="font-mono text-xs uppercase flex items-center gap-1"><Calendar className="size-3" /> Released</dt>
-                  <dd className="font-display mt-1">{new Date(tool.releaseDate).toLocaleDateString()}</dd>
+                  <dd className="font-display mt-1">{new Date(toolData.releaseDate).toLocaleDateString()}</dd>
                 </div>
               </dl>
             </aside>
@@ -104,23 +104,23 @@ function ToolDetail() {
         <div className="border-brutal bg-foreground text-background shadow-brutal-lg overflow-hidden">
           <div className="px-6 py-4 border-b-[3px] border-background/30 flex items-center justify-between">
             <div className="inline-flex items-center gap-2 font-display text-xl"><Code2 className="size-5" /> Source code</div>
-            {tool.githubUrl && (
-              <a href={tool.githubUrl} target="_blank" rel="noreferrer" className="font-mono text-xs uppercase border-2 border-background px-3 py-1 hover:bg-background hover:text-foreground transition-colors inline-flex items-center gap-1">
+            {toolData.githubUrl && (
+              <a href={toolData.githubUrl} target="_blank" rel="noreferrer" className="font-mono text-xs uppercase border-2 border-background px-3 py-1 hover:bg-background hover:text-foreground transition-colors inline-flex items-center gap-1">
                 <Github className="size-3" /> {ghRepo ?? "Repo"} <ExternalLink className="size-3" />
               </a>
             )}
           </div>
           <div className="p-6 font-mono text-sm">
-            {tool.githubUrl ? (
+            {toolData.githubUrl ? (
               <>
                 <div className="opacity-60">// Clone the repo</div>
-                <div className="mt-1 text-brand-yellow">git clone {tool.githubUrl}.git</div>
+                <div className="mt-1 text-brand-yellow">git clone {toolData.githubUrl}.git</div>
                 <div className="mt-4 opacity-60">// Or download as zip</div>
-                <a className="mt-1 underline text-brand-green block break-all" href={`${tool.githubUrl}/archive/refs/heads/main.zip`} target="_blank" rel="noreferrer">
-                  {tool.githubUrl}/archive/refs/heads/main.zip
+                <a className="mt-1 underline text-brand-green block break-all" href={`${toolData.githubUrl}/archive/refs/heads/main.zip`} target="_blank" rel="noreferrer">
+                  {toolData.githubUrl}/archive/refs/heads/main.zip
                 </a>
                 <div className="mt-4 opacity-60">// Browse the source</div>
-                <a className="mt-1 underline text-brand-pink block break-all" href={tool.githubUrl} target="_blank" rel="noreferrer">{tool.githubUrl}</a>
+                <a className="mt-1 underline text-brand-pink block break-all" href={toolData.githubUrl} target="_blank" rel="noreferrer">{toolData.githubUrl}</a>
               </>
             ) : (
               <div className="opacity-60">// No source URL configured yet for this tool.</div>
@@ -133,27 +133,27 @@ function ToolDetail() {
         <div className="border-brutal bg-card p-8 shadow-brutal">
           <h2 className="text-3xl mb-6">Features</h2>
           <ul className="space-y-3">
-            {tool.features.map((f) => (
+            {toolData.features.map((f) => (
               <li key={f} className="flex items-start gap-3 font-medium">
                 <span className="border-brutal bg-brand-green p-1 mt-0.5"><Check className="size-3" /></span>
                 {f}
               </li>
             ))}
-            {tool.features.length === 0 && <li className="font-medium text-muted-foreground">No features listed yet.</li>}
+            {toolData.features.length === 0 && <li className="font-medium text-muted-foreground">No features listed yet.</li>}
           </ul>
         </div>
         <div className="border-brutal bg-card p-8 shadow-brutal">
           <h2 className="text-3xl mb-6">Requirements</h2>
           <ul className="space-y-3">
-            {tool.requirements.map((r) => (
+            {toolData.requirements.map((r) => (
               <li key={r} className="border-l-4 border-foreground pl-3 font-medium">{r}</li>
             ))}
-            {tool.requirements.length === 0 && <li className="font-medium text-muted-foreground">None listed.</li>}
+            {toolData.requirements.length === 0 && <li className="font-medium text-muted-foreground">None listed.</li>}
           </ul>
           <div className="mt-6">
             <div className="font-display text-sm mb-2">Platforms</div>
             <div className="flex flex-wrap gap-2">
-              {tool.platform.map((p) => (
+              {toolData.platform.map((p) => (
                 <span key={p} className="border-brutal bg-background px-3 py-1 font-mono text-xs uppercase">{p}</span>
               ))}
             </div>
@@ -161,11 +161,11 @@ function ToolDetail() {
         </div>
       </section>
 
-      {tool.changelog.length > 0 && (
+      {toolData.changelog.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
           <h2 className="text-3xl mb-6">Changelog</h2>
           <div className="border-brutal bg-card shadow-brutal divide-y-[3px] divide-foreground">
-            {tool.changelog.map((c) => (
+            {toolData.changelog.map((c) => (
               <div key={c.version} className="p-6 grid md:grid-cols-4 gap-4">
                 <div>
                   <div className="font-display text-xl">v{c.version}</div>
@@ -182,7 +182,7 @@ function ToolDetail() {
 
       {related.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-20">
-          <h2 className="text-3xl mb-6">More {tool.category} tools</h2>
+          <h2 className="text-3xl mb-6">More {toolData.category} tools</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((t) => <ToolCard key={t.slug} tool={t} />)}
           </div>
