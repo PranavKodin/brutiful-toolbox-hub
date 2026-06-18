@@ -1,6 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Download, Sparkles, Shield, Zap, Star, Quote, Hammer, Heart } from "lucide-react";
-import { tools, categories } from "@/lib/tools-data";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { ArrowRight, Sparkles, Shield, Zap, Star, Quote, Hammer, Heart, Search, Wrench, Github } from "lucide-react";
+import { categories } from "@/lib/tools-data";
+import { useTools } from "@/hooks/use-tools";
 import { ToolCard } from "@/components/ToolCard";
 import { Newsletter } from "@/components/Newsletter";
 import { NewsTicker } from "@/components/NewsTicker";
@@ -9,23 +11,16 @@ import { posts } from "@/lib/blog-data";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Bytebox — Small, sharp tools for makers" },
-      { name: "description", content: "Download tiny, focused tools for design, code, and writing. No ads. No tracking. Made by one person." },
-      { property: "og:title", content: "Bytebox — Small, sharp tools for makers" },
-      { property: "og:description", content: "Tiny, focused tools for design, code, and writing." },
+      { title: "Toolslab — Small, sharp tools for makers" },
+      { name: "description", content: "A free, open-source toolbox of tiny apps for designers, developers, and writers. Browse, search, and grab the source on GitHub." },
+      { property: "og:title", content: "Toolslab — Small, sharp tools for makers" },
+      { property: "og:description", content: "A free, open-source toolbox of tiny apps for designers, developers, and writers." },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
   component: Index,
 });
-
-const stats = [
-  { v: "8", l: "Tools shipped" },
-  { v: "42K", l: "Downloads" },
-  { v: "1.2K", l: "Subscribers" },
-  { v: "0", l: "Trackers" },
-];
 
 const testimonials = [
   { q: "Replaced four bloated apps with three of these.", a: "Maya R.", r: "Product Designer" },
@@ -34,84 +29,106 @@ const testimonials = [
 ];
 
 function Index() {
-  const featured = tools.slice(0, 6);
+  const { tools } = useTools();
+  const [q, setQ] = useState("");
+  const navigate = useNavigate();
+  const featured = tools.filter((t) => t.featured !== false).slice(0, 6);
   const latest = [...tools]
     .sort((a, b) => +new Date(b.releaseDate) - +new Date(a.releaseDate))
     .slice(0, 3);
   const recentPosts = posts.slice(0, 3);
 
+  function submitSearch(e: React.FormEvent) {
+    e.preventDefault();
+    navigate({ to: "/tools", search: { q: q.trim() || undefined } });
+  }
+
   return (
     <>
-      {/* News ticker */}
       <NewsTicker />
 
-      {/* Hero */}
+      {/* HERO */}
       <section className="relative border-b-[3px] border-foreground bg-brand-yellow overflow-hidden">
         <div className="absolute inset-0 bg-dots opacity-20 pointer-events-none" aria-hidden />
-        <div className="absolute -top-10 -right-10 size-48 border-brutal bg-brand-pink rotate-12 animate-float hidden md:block" aria-hidden />
-        <div className="absolute bottom-10 -left-10 size-32 border-brutal bg-brand-blue -rotate-6 animate-float hidden md:block" aria-hidden style={{ animationDelay: "1s" }} />
-
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-28 grid lg:grid-cols-12 gap-10 items-center">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 md:py-24 grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-7 animate-pop-in">
             <div className="inline-flex items-center gap-2 border-brutal bg-background px-3 py-1 font-mono text-xs uppercase mb-6 shadow-brutal-sm">
               <span className="size-2 bg-brand-green inline-block animate-blink" />
-              <Sparkles className="size-3" /> {tools.length} tools live · v3.0 just shipped
+              <Wrench className="size-3" /> {tools.length} free open-source mini-apps
             </div>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-6">
-              Small tools.<br />
-              <span className="bg-foreground text-background px-2 inline-block animate-wiggle">Sharp results.</span>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-5">
+              A toolbox of<br />
+              <span className="bg-foreground text-background px-2 inline-block animate-wiggle">small, sharp tools</span><br />
+              for makers.
             </h1>
-            <p className="text-lg md:text-xl max-w-xl font-medium mb-8">
-              A growing toolbox of focused mini-apps for designers, developers, and writers. Download once. Own forever. Updates land in your inbox.
+            <p className="text-lg md:text-xl max-w-xl font-medium mb-7">
+              Tiny apps that do one thing well — design, code, writing, productivity. Free, open-source, no tracking, no signup required.
             </p>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/tools" className="border-brutal bg-foreground text-background px-6 py-3 font-bold uppercase shadow-brutal hover-lift inline-flex items-center gap-2">
-                Browse all tools <ArrowRight className="size-4" />
+
+            {/* Search bar */}
+            <form onSubmit={submitSearch} className="border-brutal bg-background shadow-brutal flex items-stretch max-w-xl mb-6 focus-within:translate-x-[-2px] focus-within:translate-y-[-2px] transition-transform">
+              <div className="pl-4 flex items-center"><Search className="size-5" /></div>
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search tools — try 'json', 'image', 'regex'…"
+                className="flex-1 px-3 py-4 font-medium bg-transparent focus:outline-none"
+                aria-label="Search tools"
+              />
+              <button type="submit" className="bg-foreground text-background px-5 font-bold uppercase text-sm inline-flex items-center gap-2 hover:bg-brand-pink hover:text-foreground transition-colors">
+                Search <ArrowRight className="size-4" />
+              </button>
+            </form>
+
+            <div className="flex flex-wrap gap-3 items-center">
+              <Link to="/tools" className="border-brutal bg-foreground text-background px-7 py-4 font-display text-lg uppercase shadow-brutal hover-lift inline-flex items-center gap-3 group">
+                Browse all tools
+                <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <a href="#newsletter" className="border-brutal bg-background px-6 py-3 font-bold uppercase shadow-brutal hover-lift">
+              <a href="#newsletter" className="border-brutal bg-transparent px-5 py-3 font-bold uppercase text-sm hover:bg-background transition-colors">
                 Get updates
               </a>
-              <Link to="/roadmap" className="border-brutal bg-brand-pink px-6 py-3 font-bold uppercase shadow-brutal hover-lift">
-                See roadmap
-              </Link>
             </div>
-            <div className="mt-8 flex flex-wrap gap-6 text-xs font-mono uppercase">
-              <span className="inline-flex items-center gap-2"><Star className="size-3 fill-foreground" /> 4.9 avg rating</span>
-              <span className="inline-flex items-center gap-2"><Download className="size-3" /> 42,000+ downloads</span>
-              <span className="inline-flex items-center gap-2"><Shield className="size-3" /> Local-first</span>
-            </div>
-          </div>
-          <div className="lg:col-span-5">
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { icon: Download, label: "One-click install", color: "bg-brand-pink" },
-                { icon: Shield, label: "Local-first & private", color: "bg-brand-blue" },
-                { icon: Zap, label: "Stupidly fast", color: "bg-brand-green" },
-                { icon: Sparkles, label: "Free forever", color: "bg-brand-orange" },
-              ].map((f, i) => (
-                <div
-                  key={f.label}
-                  className={`${f.color} border-brutal shadow-brutal p-5 animate-pop-in hover-lift`}
-                  style={{ animationDelay: `${0.1 + i * 0.08}s` }}
-                >
-                  <f.icon className="size-7 mb-3" />
-                  <div className="font-display text-sm">{f.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Stats strip */}
-      <section className="border-b-[3px] border-foreground bg-background">
-        <div className="mx-auto max-w-7xl grid grid-cols-2 md:grid-cols-4 divide-x-[3px] divide-foreground">
-          {stats.map((s) => (
-            <div key={s.l} className="px-4 py-8 text-center">
-              <div className="font-display text-4xl md:text-6xl">{s.v}</div>
-              <div className="font-mono text-xs uppercase tracking-wider mt-1">{s.l}</div>
+            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-xs font-mono uppercase">
+              <span className="inline-flex items-center gap-2"><Github className="size-3" /> Open source</span>
+              <span className="inline-flex items-center gap-2"><Shield className="size-3" /> Local-first</span>
+              <span className="inline-flex items-center gap-2"><Heart className="size-3" /> Built by one human</span>
             </div>
-          ))}
+          </div>
+
+          {/* CREATIVE BENTO — asymmetric, rotated, layered */}
+          <div className="lg:col-span-5">
+            <div className="relative h-[420px] md:h-[480px]">
+              {/* Big rotated card */}
+              <div className="absolute top-0 left-2 w-[58%] h-[58%] border-brutal bg-brand-pink shadow-brutal-lg -rotate-3 p-5 hover:-rotate-1 transition-transform animate-pop-in">
+                <Zap className="size-9 mb-2" />
+                <div className="font-display text-2xl leading-tight">Stupidly<br />fast</div>
+                <div className="font-mono text-[10px] uppercase mt-2 opacity-70">// 0ms startup</div>
+              </div>
+              {/* Circle */}
+              <div className="absolute top-4 right-0 size-36 md:size-44 border-brutal bg-brand-blue shadow-brutal rounded-full flex flex-col items-center justify-center text-center rotate-6 hover:rotate-3 transition-transform animate-pop-in" style={{ animationDelay: "0.08s" }}>
+                <Shield className="size-8 mb-1" />
+                <div className="font-display text-base px-3 leading-tight">Local-first<br />& private</div>
+              </div>
+              {/* Tall thin */}
+              <div className="absolute bottom-0 left-0 w-[38%] h-[50%] border-brutal bg-brand-green shadow-brutal rotate-2 p-4 hover:rotate-0 transition-transform animate-pop-in" style={{ animationDelay: "0.16s" }}>
+                <Sparkles className="size-7 mb-2" />
+                <div className="font-display text-xl leading-tight">Free<br />forever</div>
+                <div className="mt-3 inline-block border-brutal bg-background px-2 py-0.5 font-mono text-[10px] uppercase">$0</div>
+              </div>
+              {/* Wide bottom-right */}
+              <div className="absolute bottom-4 right-2 w-[55%] h-[42%] border-brutal bg-brand-orange shadow-brutal-lg -rotate-2 p-4 hover:rotate-0 transition-transform animate-pop-in" style={{ animationDelay: "0.24s" }}>
+                <Github className="size-7 mb-2" />
+                <div className="font-display text-xl leading-tight">Source on<br />GitHub</div>
+                <div className="font-mono text-[10px] uppercase mt-2 opacity-70">// MIT licensed</div>
+              </div>
+              {/* Little sticker */}
+              <div className="absolute top-[42%] left-[42%] size-16 border-brutal bg-foreground text-background rounded-full flex items-center justify-center rotate-12 shadow-brutal-sm animate-float">
+                <Star className="size-7 fill-brand-yellow text-brand-yellow" />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -194,6 +211,7 @@ function Index() {
               <Link
                 key={c}
                 to="/tools"
+                search={{ q: undefined }}
                 className="border-brutal bg-background px-5 py-3 font-display text-lg shadow-brutal hover-lift"
               >
                 {c} <span className="font-mono text-xs ml-1">({tools.filter(t => t.category === c).length})</span>
@@ -203,13 +221,13 @@ function Index() {
         </div>
       </section>
 
-      {/* Pitch / How it works */}
+      {/* How it works */}
       <section className="bg-card border-b-[3px] border-foreground">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 grid md:grid-cols-3 gap-6">
           {[
             { n: "01", t: "Pick a tool", d: "Browse the toolbox. Each tool does one thing well." },
-            { n: "02", t: "Download it", d: "One click. No accounts. No installers asking for your soul." },
-            { n: "03", t: "Get back to work", d: "Tools stay out of your way. Updates ship in your inbox." },
+            { n: "02", t: "Use it free", d: "Open it in the browser or grab the source from GitHub." },
+            { n: "03", t: "Get back to work", d: "Tools stay out of your way. Updates ship when ready." },
           ].map((s, i) => (
             <div
               key={s.n}
@@ -287,7 +305,6 @@ function Index() {
               <h2 className="text-4xl md:text-6xl">Made by one human. <span className="text-brand-yellow">Yours forever.</span></h2>
               <p className="mt-4 font-medium text-background/80 max-w-2xl">
                 No VCs. No subscription traps. Just small tools that respect your time and your disk space.
-                If you like what you see, tell a friend or buy me a coffee.
               </p>
             </div>
             <div className="md:col-span-4 flex flex-col gap-3">
@@ -302,7 +319,6 @@ function Index() {
         </div>
       </section>
 
-      {/* Newsletter */}
       <section id="newsletter" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-20">
         <Newsletter />
       </section>
