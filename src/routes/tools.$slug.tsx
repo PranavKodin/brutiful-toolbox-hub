@@ -32,12 +32,13 @@ export const Route = createFileRoute("/tools/$slug")({
 function ToolDetail() {
   const { slug, fallback } = Route.useLoaderData();
   const { tool: live, loading } = useTool(slug);
-  const tool = live ?? fallback;
+  const tool: Tool | null = live ?? fallback;
 
   if (!tool) {
     if (loading) return <div className="mx-auto max-w-3xl px-4 py-20 font-mono">Loading…</div>;
     throw notFound();
   }
+  const toolData: Tool = tool;
 
   const Icon = (Icons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[tool.icon] ?? Icons.Box;
   const related = tools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, 3);
