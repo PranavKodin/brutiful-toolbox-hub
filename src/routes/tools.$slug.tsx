@@ -13,9 +13,9 @@ export const Route = createFileRoute("/tools/$slug")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: `${loaderData?.name ?? "Tool"} — Unit Tools` },
+      { title: `${loaderData?.name ?? "Tool"} — Bytebox` },
       { name: "description", content: loaderData?.description ?? "" },
-      { property: "og:title", content: `${loaderData?.name} — Unit Tools` },
+      { property: "og:title", content: `${loaderData?.name} — Bytebox` },
       { property: "og:description", content: loaderData?.tagline ?? "" },
       { property: "og:type", content: "product" },
       { property: "og:url", content: `/tools/${loaderData?.slug}` },
