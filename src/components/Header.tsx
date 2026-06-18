@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Hammer, Menu, X } from "lucide-react";
+import { Hammer, Menu, X, User as UserIcon, LogIn } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
 
 const links = [
   { to: "/", label: "Home" },
@@ -15,6 +16,7 @@ const links = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <header className="border-b-[3px] border-foreground bg-background sticky top-0 z-40">
@@ -39,12 +41,21 @@ export function Header() {
                 {l.label}
               </Link>
             ))}
-            <Link
-              to="/tools"
-              className="ml-2 border-brutal bg-foreground px-4 py-2 font-bold uppercase text-sm text-background shadow-brutal-sm hover-lift"
-            >
-              Download
-            </Link>
+            {user ? (
+              <Link
+                to="/profile"
+                className="ml-2 border-brutal bg-brand-pink px-4 py-2 font-bold uppercase text-sm shadow-brutal-sm hover-lift inline-flex items-center gap-2"
+              >
+                <UserIcon className="size-4" /> Profile
+              </Link>
+            ) : (
+              <Link
+                to="/auth"
+                className="ml-2 border-brutal bg-foreground px-4 py-2 font-bold uppercase text-sm text-background shadow-brutal-sm hover-lift inline-flex items-center gap-2"
+              >
+                <LogIn className="size-4" /> Sign in
+              </Link>
+            )}
           </nav>
 
           <button
@@ -70,6 +81,13 @@ export function Header() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              to={user ? "/profile" : "/auth"}
+              onClick={() => setOpen(false)}
+              className="border-brutal bg-foreground text-background px-3 py-2 font-bold uppercase"
+            >
+              {user ? "Profile" : "Sign in"}
+            </Link>
           </nav>
         )}
       </div>

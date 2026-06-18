@@ -1,19 +1,31 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight, Download, Heart } from "lucide-react";
 import * as Icons from "lucide-react";
 import { colorClass, type Tool } from "@/lib/tools-data";
+import { useFavorite } from "@/hooks/use-favorite";
 
 export function ToolCard({ tool }: { tool: Tool }) {
   const Icon = (Icons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[tool.icon] ?? Icons.Box;
+  const { isFav, toggle, busy } = useFavorite(tool.slug);
   return (
     <article className="border-brutal bg-card shadow-brutal hover-lift flex flex-col">
       <div className={`${colorClass[tool.color]} border-b-[3px] border-foreground p-5 flex items-start justify-between`}>
         <div className="border-brutal bg-background p-3">
           <Icon className="size-7" />
         </div>
-        <span className="font-mono text-xs uppercase bg-background border-brutal px-2 py-1">
-          v{tool.version}
-        </span>
+        <div className="flex flex-col items-end gap-2">
+          <span className="font-mono text-xs uppercase bg-background border-brutal px-2 py-1">
+            v{tool.version}
+          </span>
+          <button
+            onClick={toggle}
+            disabled={busy}
+            aria-label={isFav ? "Remove favorite" : "Save tool"}
+            className={`border-brutal p-1.5 shadow-brutal-sm hover-lift ${isFav ? "bg-brand-pink" : "bg-background"}`}
+          >
+            <Heart className={`size-4 ${isFav ? "fill-foreground" : ""}`} />
+          </button>
+        </div>
       </div>
       <div className="p-5 flex-1 flex flex-col">
         <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2">

@@ -13,11 +13,14 @@ import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToolsSlugRouteImport } from './routes/tools.$slug'
@@ -41,6 +44,16 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const RoadmapRoute = RoadmapRouteImport.update({
   id: '/roadmap',
   path: '/roadmap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -68,6 +81,11 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -92,11 +110,14 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -107,11 +128,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -123,11 +147,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -140,11 +167,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/auth'
     | '/blog'
     | '/changelog'
     | '/contact'
     | '/faq'
     | '/privacy'
+    | '/profile'
+    | '/reset-password'
     | '/roadmap'
     | '/sitemap.xml'
     | '/terms'
@@ -155,11 +185,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/auth'
     | '/blog'
     | '/changelog'
     | '/contact'
     | '/faq'
     | '/privacy'
+    | '/profile'
+    | '/reset-password'
     | '/roadmap'
     | '/sitemap.xml'
     | '/terms'
@@ -170,11 +203,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/auth'
     | '/blog'
     | '/changelog'
     | '/contact'
     | '/faq'
     | '/privacy'
+    | '/profile'
+    | '/reset-password'
     | '/roadmap'
     | '/sitemap.xml'
     | '/terms'
@@ -186,11 +222,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
   ChangelogRoute: typeof ChangelogRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProfileRoute: typeof ProfileRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RoadmapRoute: typeof RoadmapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
@@ -227,6 +266,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoadmapRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -260,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -316,11 +376,14 @@ const ToolsRouteWithChildren = ToolsRoute._addFileChildren(ToolsRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
   ChangelogRoute: ChangelogRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   PrivacyRoute: PrivacyRoute,
+  ProfileRoute: ProfileRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RoadmapRoute: RoadmapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
