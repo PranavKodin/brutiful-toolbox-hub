@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/hooks/use-auth";
-import { tools } from "@/lib/tools-data";
+import { useTools } from "@/hooks/use-tools";
 import { toast } from "sonner";
-import { LogOut, Save, User as UserIcon } from "lucide-react";
+import { LogOut, Save, User as UserIcon, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
