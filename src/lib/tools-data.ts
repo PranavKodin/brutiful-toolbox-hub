@@ -7,13 +7,15 @@ export interface Tool {
   version: string;
   size: string;
   platform: string[];
-  downloadUrl: string;
+  githubUrl?: string;
   releaseDate: string;
   color: "yellow" | "pink" | "blue" | "green" | "orange";
   icon: string;
   features: string[];
   changelog: { version: string; date: string; notes: string[] }[];
   requirements: string[];
+  featured?: boolean;
+  order?: number;
 }
 
 export const tools: Tool[] = [
