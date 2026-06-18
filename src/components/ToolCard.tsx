@@ -27,7 +27,7 @@ export function ToolCard({ tool }: { tool: Tool }) {
             params={{ slug: tool.slug }}
             className="flex-1 border-brutal bg-background px-3 py-2 font-bold uppercase text-sm shadow-brutal-sm hover-lift inline-flex items-center justify-center gap-2"
           >
-            Details <ArrowRight className="size-4" />
+            DETAILS <ArrowRight className="size-4" />
           </Link>
           <a
             href={tool.downloadUrl}

@@ -72,13 +72,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Unit Tools — Small, sharp tools for makers" },
+      { title: "Bytebox — Small, sharp tools for makers" },
       { name: "description", content: "A growing collection of small downloadable tools for designers, developers, and writers. No ads. No tracking." },
-      { name: "author", content: "Unit Tools" },
-      { property: "og:title", content: "Unit Tools — Small, sharp tools for makers" },
+      { name: "author", content: "Bytebox" },
+      { property: "og:title", content: "Bytebox — Small, sharp tools for makers" },
       { property: "og:description", content: "Small downloadable tools for designers, developers, and writers." },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Unit Tools" },
+      { property: "og:site_name", content: "Bytebox" },
       { name: "twitter:card", content: "summary" },
     ],
     links: [
@@ -93,7 +93,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Unit Tools",
+          name: "Bytebox",
           description: "Small downloadable tools for makers.",
         }),
       },

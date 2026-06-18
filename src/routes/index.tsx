@@ -9,9 +9,9 @@ import { posts } from "@/lib/blog-data";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Unit Tools — Small, sharp tools for makers" },
+      { title: "Bytebox — Small, sharp tools for makers" },
       { name: "description", content: "Download tiny, focused tools for design, code, and writing. No ads. No tracking. Made by one person." },
-      { property: "og:title", content: "Unit Tools — Small, sharp tools for makers" },
+      { property: "og:title", content: "Bytebox — Small, sharp tools for makers" },
       { property: "og:description", content: "Tiny, focused tools for design, code, and writing." },
       { property: "og:url", content: "/" },
     ],

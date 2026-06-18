@@ -24,7 +24,7 @@ export function Header() {
             <span className="border-brutal bg-brand-yellow p-1.5 shadow-brutal-sm">
               <Hammer className="size-5" />
             </span>
-            UNIT/TOOLS
+            BYTEBOX
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
