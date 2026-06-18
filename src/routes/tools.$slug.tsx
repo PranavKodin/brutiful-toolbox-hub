@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Check, Download, Calendar, HardDrive, Tag } from "lucide-react";
 import * as Icons from "lucide-react";
-import { tools, getTool, colorClass } from "@/lib/tools-data";
+import { tools, getTool, colorClass, type Tool } from "@/lib/tools-data";
 import { ToolCard } from "@/components/ToolCard";
 import { toast } from "sonner";
 
@@ -41,7 +41,7 @@ export const Route = createFileRoute("/tools/$slug")({
 });
 
 function ToolDetail() {
-  const tool = Route.useLoaderData();
+  const tool = Route.useLoaderData() as Tool;
   const Icon = (Icons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[tool.icon] ?? Icons.Box;
   const related = tools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, 3);
 
