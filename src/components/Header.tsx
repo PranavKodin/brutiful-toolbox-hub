@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Hammer, Menu, X, User as UserIcon, LogIn } from "lucide-react";
+import { Hammer, Menu, X, User as UserIcon, LogIn, Shield } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -9,14 +9,13 @@ const links = [
   { to: "/changelog", label: "Changelog" },
   { to: "/roadmap", label: "Roadmap" },
   { to: "/blog", label: "Blog" },
-  { to: "/faq", label: "FAQ" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
 
   return (
     <header className="border-b-[3px] border-foreground bg-background sticky top-0 z-40">
@@ -41,6 +40,14 @@ export function Header() {
                 {l.label}
               </Link>
             ))}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="ml-2 border-brutal bg-brand-yellow px-3 py-2 font-bold uppercase text-sm shadow-brutal-sm hover-lift inline-flex items-center gap-2"
+              >
+                <Shield className="size-4" /> Admin
+              </Link>
+            )}
             {user ? (
               <Link
                 to="/profile"
@@ -81,6 +88,11 @@ export function Header() {
                 {l.label}
               </Link>
             ))}
+            {isAdmin && (
+              <Link to="/admin" onClick={() => setOpen(false)} className="border-brutal bg-brand-yellow px-3 py-2 font-bold uppercase">
+                Admin
+              </Link>
+            )}
             <Link
               to={user ? "/profile" : "/auth"}
               onClick={() => setOpen(false)}
