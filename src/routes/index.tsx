@@ -57,8 +57,8 @@ function Index() {
               <Wrench className="size-3" /> {tools.length} free open-source mini-apps
             </div>
             <h1 className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-5 uppercase whitespace-pre-line">
-              A TOOLBOX{"\u00a0"}<br />
-              <span className="bg-foreground text-background px-2 inline-block animate-wiggle">SMALL TOOLS</span>{"\u00a0"}<br />
+              A TOOLBOX{"\u00a0\n"}
+              <span className="bg-foreground text-background px-2 inline-block animate-wiggle">SMALL TOOLS</span>{"\n"}
               FOR MAKERS
             </h1>
             <p className="text-lg md:text-xl max-w-xl font-medium mb-7">
