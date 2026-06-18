@@ -91,12 +91,19 @@ function ProfilePage() {
                 <div className="font-mono text-xs">{user.email}</div>
               </div>
             </div>
-            <button
-              onClick={handleSignOut}
-              className="border-brutal bg-foreground text-background px-4 py-2 font-bold uppercase shadow-brutal-sm hover-lift inline-flex items-center gap-2"
-            >
-              <LogOut className="size-4" /> Sign out
-            </button>
+            <div className="flex flex-wrap gap-2">
+              {isAdmin && (
+                <Link to="/admin" className="border-brutal bg-brand-yellow px-4 py-2 font-bold uppercase shadow-brutal-sm hover-lift inline-flex items-center gap-2">
+                  <Shield className="size-4" /> Admin panel
+                </Link>
+              )}
+              <button
+                onClick={handleSignOut}
+                className="border-brutal bg-foreground text-background px-4 py-2 font-bold uppercase shadow-brutal-sm hover-lift inline-flex items-center gap-2"
+              >
+                <LogOut className="size-4" /> Sign out
+              </button>
+            </div>
           </div>
         </div>
       </section>
