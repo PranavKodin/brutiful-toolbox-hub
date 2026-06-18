@@ -115,3 +115,73 @@
     box-shadow: 2px 2px 0 0 var(--color-foreground);
   }
 }
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(var(--color-foreground) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-foreground) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: -1px -1px;
+  opacity: 0.06;
+}
+
+@utility bg-dots {
+  background-image: radial-gradient(var(--color-foreground) 1.2px, transparent 1.2px);
+  background-size: 18px 18px;
+}
+
+@keyframes scroll-x {
+  from { transform: translateX(0) }
+  to { transform: translateX(-50%) }
+}
+@keyframes scroll-x-rev {
+  from { transform: translateX(-50%) }
+  to { transform: translateX(0) }
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-8px) }
+}
+@keyframes blink {
+  0%, 50% { opacity: 1 }
+  51%, 100% { opacity: 0 }
+}
+@keyframes pop-in {
+  0% { transform: scale(0.92) translateY(8px); opacity: 0 }
+  100% { transform: scale(1) translateY(0); opacity: 1 }
+}
+@keyframes wiggle {
+  0%,100% { transform: rotate(-2deg) }
+  50% { transform: rotate(2deg) }
+}
+@keyframes shimmer-stripes {
+  from { background-position: 0 0 }
+  to { background-position: 40px 0 }
+}
+
+@utility animate-marquee {
+  animation: scroll-x 35s linear infinite;
+}
+@utility animate-marquee-rev {
+  animation: scroll-x-rev 45s linear infinite;
+}
+@utility animate-float {
+  animation: float-y 3.5s ease-in-out infinite;
+}
+@utility animate-blink {
+  animation: blink 1s steps(1) infinite;
+}
+@utility animate-pop-in {
+  animation: pop-in 0.5s cubic-bezier(.2,.9,.2,1.1) both;
+}
+@utility animate-wiggle {
+  animation: wiggle 2.5s ease-in-out infinite;
+}
+@utility stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--color-foreground) 0 8px,
+    transparent 8px 20px
+  );
+  animation: shimmer-stripes 1.6s linear infinite;
+}

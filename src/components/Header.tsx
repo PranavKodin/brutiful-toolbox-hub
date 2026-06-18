@@ -5,6 +5,10 @@ import { useState } from "react";
 const links = [
   { to: "/", label: "Home" },
   { to: "/tools", label: "Tools" },
+  { to: "/changelog", label: "Changelog" },
+  { to: "/roadmap", label: "Roadmap" },
+  { to: "/blog", label: "Blog" },
+  { to: "/faq", label: "FAQ" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -23,7 +27,7 @@ export function Header() {
             UNIT/TOOLS
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {links.map((l) => (
               <Link
                 key={l.to}
@@ -44,7 +48,7 @@ export function Header() {
           </nav>
 
           <button
-            className="md:hidden border-brutal bg-background p-2 shadow-brutal-sm"
+            className="lg:hidden border-brutal bg-background p-2 shadow-brutal-sm"
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -53,7 +57,7 @@ export function Header() {
         </div>
 
         {open && (
-          <nav className="md:hidden flex flex-col gap-2 pb-4">
+          <nav className="lg:hidden flex flex-col gap-2 pb-4">
             {links.map((l) => (
               <Link
                 key={l.to}
