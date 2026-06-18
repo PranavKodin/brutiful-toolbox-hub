@@ -1,7 +1,14 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signInWithPopup,
+  updateProfile,
+} from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db, googleProvider } from "@/lib/firebase";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { Hammer, Mail, Lock, User as UserIcon } from "lucide-react";
@@ -32,30 +39,34 @@ function AuthPage() {
     if (!loading && user) navigate({ to: "/profile" });
   }, [user, loading, navigate]);
 
+  async function ensureProfile(uid: string, data: { username?: string | null; avatar_url?: string | null; email: string | null }) {
+    await setDoc(
+      doc(db, "users", uid),
+      {
+        username: data.username ?? null,
+        avatar_url: data.avatar_url ?? null,
+        email: data.email,
+        createdAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: window.location.origin,
-            data: { username: username || email.split("@")[0] },
-          },
-        });
-        if (error) throw error;
-        toast.success("Account created. Check your email if confirmation is required.");
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const displayName = username || email.split("@")[0];
+        await updateProfile(cred.user, { displayName });
+        await ensureProfile(cred.user.uid, { username: displayName, avatar_url: null, email: cred.user.email });
+        toast.success("Account created");
       } else if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        await signInWithEmailAndPassword(auth, email, password);
         toast.success("Welcome back");
       } else {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/reset-password`,
-        });
-        if (error) throw error;
+        await sendPasswordResetEmail(auth, email);
         toast.success("Reset email sent if the account exists.");
       }
     } catch (err) {
@@ -67,9 +78,16 @@ function AuthPage() {
 
   async function handleGoogle() {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) {
-      toast.error("Google sign-in failed");
+    try {
+      const cred = await signInWithPopup(auth, googleProvider);
+      await ensureProfile(cred.user.uid, {
+        username: cred.user.displayName,
+        avatar_url: cred.user.photoURL,
+        email: cred.user.email,
+      });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Google sign-in failed");
+    } finally {
       setBusy(false);
     }
   }
