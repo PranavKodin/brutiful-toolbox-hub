@@ -11,9 +11,9 @@ import { posts } from "@/lib/blog-data";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Toolslab — Small, sharp tools for makers" },
+      { title: "TOOLS LAB — Small, sharp tools for makers" },
       { name: "description", content: "A free, open-source toolbox of tiny apps for designers, developers, and writers. Browse, search, and grab the source on GitHub." },
-      { property: "og:title", content: "Toolslab — Small, sharp tools for makers" },
+      { property: "og:title", content: "TOOLS LAB — Small, sharp tools for makers" },
       { property: "og:description", content: "A free, open-source toolbox of tiny apps for designers, developers, and writers." },
       { property: "og:url", content: "/" },
     ],
@@ -56,13 +56,13 @@ function Index() {
               <span className="size-2 bg-brand-green inline-block animate-blink" />
               <Wrench className="size-3" /> {tools.length} free open-source mini-apps
             </div>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-5">
-              A toolbox of<br />
-              <span className="bg-foreground text-background px-2 inline-block animate-wiggle">small, sharp tools</span><br />
-              for makers.
+            <h1 className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-5 uppercase whitespace-pre-line">
+              A TOOLBOX{"\u00a0"}<br />
+              <span className="bg-foreground text-background px-2 inline-block animate-wiggle">SMALL TOOLS</span>{"\u00a0"}<br />
+              FOR MAKERS
             </h1>
             <p className="text-lg md:text-xl max-w-xl font-medium mb-7">
-              Tiny apps that do one thing well — design, code, writing, productivity. Free, open-source, no tracking, no signup required.
+              Tiny apps that knows one thing well - productivity.
             </p>
 
             {/* Search bar */}
