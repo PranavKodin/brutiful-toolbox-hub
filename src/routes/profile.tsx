@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import { useAuth } from "@/hooks/use-auth";
 import { tools } from "@/lib/tools-data";
-import { ToolCard } from "@/components/ToolCard";
 import { toast } from "sonner";
 import { LogOut, Save, User as UserIcon } from "lucide-react";
 
@@ -33,13 +33,12 @@ function ProfilePage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [{ data: profile }, { data: favs }] = await Promise.all([
-        supabase.from("profiles").select("username, avatar_url").eq("id", user.id).maybeSingle(),
-        supabase.from("favorites").select("tool_slug").eq("user_id", user.id),
-      ]);
-      setUsername(profile?.username ?? "");
-      setAvatarUrl(profile?.avatar_url ?? "");
-      setFavorites(favs?.map((f) => f.tool_slug) ?? []);
+      const profileSnap = await getDoc(doc(db, "users", user.uid));
+      const favSnap = await getDocs(collection(db, "users", user.uid, "favorites"));
+      const data = profileSnap.data() ?? {};
+      setUsername(data.username ?? user.displayName ?? "");
+      setAvatarUrl(data.avatar_url ?? user.photoURL ?? "");
+      setFavorites(favSnap.docs.map((d) => d.id));
       setReady(true);
     })();
   }, [user]);
@@ -47,13 +46,18 @@ function ProfilePage() {
   async function save() {
     if (!user) return;
     setSaving(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ username: username || null, avatar_url: avatarUrl || null })
-      .eq("id", user.id);
-    setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success("Profile saved");
+    try {
+      await setDoc(
+        doc(db, "users", user.uid),
+        { username: username || null, avatar_url: avatarUrl || null, email: user.email },
+        { merge: true },
+      );
+      toast.success("Profile saved");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to save");
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function handleSignOut() {
@@ -118,7 +122,6 @@ function ProfilePage() {
                 placeholder="https://..."
                 className="w-full border-brutal bg-background px-3 py-2 font-medium"
               />
-              <span className="text-xs font-mono mt-1 block opacity-70">Paste a link to your profile image.</span>
             </label>
             <button
               onClick={save}

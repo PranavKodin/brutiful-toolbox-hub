@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { doc, getDoc, setDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
@@ -15,13 +16,7 @@ export function useFavorite(toolSlug: string) {
       setIsFav(false);
       return;
     }
-    supabase
-      .from("favorites")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("tool_slug", toolSlug)
-      .maybeSingle()
-      .then(({ data }) => setIsFav(!!data));
+    getDoc(doc(db, "users", user.uid, "favorites", toolSlug)).then((s) => setIsFav(s.exists()));
   }, [user, toolSlug]);
 
   const toggle = useCallback(async () => {
@@ -31,14 +26,20 @@ export function useFavorite(toolSlug: string) {
       return;
     }
     setBusy(true);
-    if (isFav) {
-      await supabase.from("favorites").delete().eq("user_id", user.id).eq("tool_slug", toolSlug);
-      setIsFav(false);
-    } else {
-      await supabase.from("favorites").insert({ user_id: user.id, tool_slug: toolSlug });
-      setIsFav(true);
+    const ref = doc(db, "users", user.uid, "favorites", toolSlug);
+    try {
+      if (isFav) {
+        await deleteDoc(ref);
+        setIsFav(false);
+      } else {
+        await setDoc(ref, { toolSlug, createdAt: serverTimestamp() });
+        setIsFav(true);
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   }, [user, isFav, toolSlug, navigate]);
 
   return { isFav, toggle, busy, signedIn: !!user };
