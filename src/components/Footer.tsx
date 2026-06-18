@@ -14,7 +14,7 @@ export function Footer() {
             <div className="mt-4 flex gap-2">
               <a href="#" aria-label="GitHub" className="border-2 border-background p-2 hover:bg-brand-yellow hover:text-foreground"><Github className="size-4" /></a>
               <a href="#" aria-label="Twitter" className="border-2 border-background p-2 hover:bg-brand-yellow hover:text-foreground"><Twitter className="size-4" /></a>
-              <a href="mailto:hello@bytebox.dev" aria-label="Email" className="border-2 border-background p-2 hover:bg-brand-yellow hover:text-foreground"><Mail className="size-4" /></a>
+              <a href="mailto:hello@toolslab.dev" aria-label="Email" className="border-2 border-background p-2 hover:bg-brand-yellow hover:text-foreground"><Mail className="size-4" /></a>
             </div>
           </div>
           <div>
@@ -44,7 +44,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-10 pt-6 border-t border-background/30 flex flex-wrap justify-between gap-4 text-xs uppercase tracking-wider">
-          <div>© {new Date().getFullYear()} Bytebox. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} Toolslab. All rights reserved.</div>
           <div className="font-mono">Built with rage and respect.</div>
         </div>
       </div>
