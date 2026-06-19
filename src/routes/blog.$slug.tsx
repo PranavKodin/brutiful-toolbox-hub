@@ -1,16 +1,19 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { getPost, posts, type Post } from "@/lib/blog-data";
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { getPost, posts as seedPosts, type Post } from "@/lib/blog-data";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
     const post = getPost(params.slug);
-    if (!post) throw notFound();
-    return post;
+    // Allow Firestore-only posts: don't 404 here; component will fetch.
+    return post ?? ({ slug: params.slug } as Partial<Post>);
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: `${loaderData?.title ?? "Post"} — Unit Tools Blog` },
+      { title: `${loaderData?.title ?? "Post"} — Tools Lab Blog` },
       { name: "description", content: loaderData?.excerpt ?? "" },
       { property: "og:title", content: loaderData?.title ?? "" },
       { property: "og:description", content: loaderData?.excerpt ?? "" },
@@ -23,8 +26,29 @@ export const Route = createFileRoute("/blog/$slug")({
 });
 
 function BlogPost() {
-  const post = Route.useLoaderData() as Post;
-  const related = posts.filter((p) => p.slug !== post.slug).slice(0, 2);
+  const initial = Route.useLoaderData() as Post;
+  const [post, setPost] = useState<Post | null>(initial?.title ? initial : null);
+  const [loading, setLoading] = useState(!initial?.title);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const snap = await getDoc(doc(db, "posts", initial.slug));
+        if (cancelled) return;
+        if (snap.exists()) setPost(snap.data() as Post);
+        else if (!post) setPost(seedPosts.find((p) => p.slug === initial.slug) ?? null);
+      } catch {
+        if (!post) setPost(seedPosts.find((p) => p.slug === initial.slug) ?? null);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [initial.slug]);
+
+  if (loading) return <div className="mx-auto max-w-3xl px-4 py-20 font-mono">Loading…</div>;
+  if (!post) throw notFound();
 
   return (
     <>
@@ -49,25 +73,6 @@ function BlogPost() {
           ))}
         </div>
       </article>
-
-      {related.length > 0 && (
-        <section className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pb-20">
-          <h2 className="text-2xl mb-4">Keep reading</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {related.map((p) => (
-              <Link
-                key={p.slug}
-                to="/blog/$slug"
-                params={{ slug: p.slug }}
-                className="border-brutal bg-card p-5 shadow-brutal-sm hover-lift block"
-              >
-                <span className="font-mono text-xs uppercase">{p.tag}</span>
-                <div className="font-display text-lg mt-1">{p.title}</div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
     </>
   );
 }

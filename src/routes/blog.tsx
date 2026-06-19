@@ -1,12 +1,12 @@
 import { createFileRoute, Link, Outlet, useMatches } from "@tanstack/react-router";
-import { posts } from "@/lib/blog-data";
+import { usePosts } from "@/hooks/use-content";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — Unit Tools" },
-      { name: "description", content: "Notes, dispatches, and release stories from the Unit Tools workshop." },
-      { property: "og:title", content: "Blog — Unit Tools" },
+      { title: "Blog — Tools Lab" },
+      { name: "description", content: "Notes, dispatches, and release stories from the Tools Lab workshop." },
+      { property: "og:title", content: "Blog — Tools Lab" },
       { property: "og:description", content: "Notes & release stories from the workshop." },
       { property: "og:url", content: "/blog" },
     ],
@@ -19,6 +19,8 @@ function BlogLayout() {
   const matches = useMatches();
   const isChild = matches.some((m) => m.routeId === "/blog/$slug");
   if (isChild) return <Outlet />;
+
+  const { posts } = usePosts();
 
   return (
     <>
