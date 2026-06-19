@@ -538,7 +538,7 @@ function UsersTab() {
                     </td>
                   </tr>
                 )}
-              </>
+              </Fragment>
             ))}
             {users.length === 0 && <tr><td colSpan={5} className="p-6 text-center font-medium">No users yet.</td></tr>}
           </tbody>
