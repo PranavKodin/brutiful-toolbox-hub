@@ -15,6 +15,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/use-auth";
+import { AdminFab } from "@/components/AdminFab";
 
 function NotFoundComponent() {
   return (
@@ -132,6 +133,7 @@ function RootComponent() {
           </main>
           <Footer />
         </div>
+        <AdminFab />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>
