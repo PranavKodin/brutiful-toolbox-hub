@@ -483,8 +483,8 @@ function UsersTab() {
           </thead>
           <tbody>
             {users.map((u) => (
-              <>
-                <tr key={u.id} className="border-t-[3px] border-foreground">
+              <Fragment key={u.id}>
+                <tr className="border-t-[3px] border-foreground">
                   <td className="p-3 font-medium">{u.email ?? "—"}</td>
                   <td className="p-3">{u.username ?? "—"}</td>
                   <td className="p-3">
