@@ -49,19 +49,41 @@ export function useTools() {
 export function useTool(slug: string) {
   const [tool, setTool] = useState<Tool | null>(() => seedTools.find((t) => t.slug === slug) ?? null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      // 1) try direct doc read
       try {
         const snap = await getDoc(doc(db, COL, slug));
         if (cancelled) return;
-        if (snap.exists()) setTool(snap.data() as Tool);
-        else setTool(seedTools.find((t) => t.slug === slug) ?? null);
-      } catch {
-        if (!cancelled) setTool(seedTools.find((t) => t.slug === slug) ?? null);
-      } finally {
-        if (!cancelled) setLoading(false);
+        if (snap.exists()) {
+          setTool(snap.data() as Tool);
+          setLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.warn("[useTool] getDoc failed, falling back to list:", e);
+      }
+      // 2) fallback: list collection and find by slug (handles per-doc read rules)
+      try {
+        const snap = await getDocs(collection(db, COL));
+        if (cancelled) return;
+        const match = snap.docs.map((d) => d.data() as Tool).find((t) => t.slug === slug);
+        if (match) {
+          setTool(match);
+          setLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.warn("[useTool] list fallback failed:", e);
+        if (!cancelled) setError(e instanceof Error ? e.message : "Failed to load tool");
+      }
+      // 3) final: seed lookup
+      if (!cancelled) {
+        setTool(seedTools.find((t) => t.slug === slug) ?? null);
+        setLoading(false);
       }
     })();
     return () => {
@@ -69,7 +91,7 @@ export function useTool(slug: string) {
     };
   }, [slug]);
 
-  return { tool, loading };
+  return { tool, loading, error };
 }
 
 export async function seedFirestore() {
