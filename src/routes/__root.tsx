@@ -16,6 +16,9 @@ import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/use-auth";
 import { AdminFab } from "@/components/AdminFab";
+import { CommandPalette } from "@/components/CommandPalette";
+import { BackToTop } from "@/components/BackToTop";
+import { ScrollProgress } from "@/components/ScrollProgress";
 
 function NotFoundComponent() {
   return (
@@ -127,6 +130,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <ScrollProgress />
         <div className="flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">
@@ -134,6 +138,8 @@ function RootComponent() {
           </main>
           <Footer />
         </div>
+        <CommandPalette />
+        <BackToTop />
         <AdminFab />
         <Toaster />
       </AuthProvider>

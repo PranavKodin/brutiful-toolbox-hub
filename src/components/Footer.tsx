@@ -7,7 +7,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid gap-8 md:grid-cols-5">
           <div className="md:col-span-2">
-            <div className="font-display text-2xl mb-3">TOOLSLAB</div>
+            <div className="font-display text-2xl mb-3">TOOLS LAB</div>
             <p className="max-w-sm text-background/80">
               Small, sharp tools made by one person. No ads, no tracking, no nonsense.
             </p>
