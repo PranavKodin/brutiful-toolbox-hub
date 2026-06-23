@@ -32,7 +32,7 @@ function Contact() {
     setForm((f) => ({ ...f, [k]: v }));
   }
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const parsed = schema.safeParse(form);
     if (!parsed.success) {
@@ -40,11 +40,21 @@ function Contact() {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const { addDoc, collection, serverTimestamp } = await import("firebase/firestore");
+      const { db } = await import("@/lib/firebase");
+      await addDoc(collection(db, "contacts"), {
+        ...parsed.data,
+        createdAt: serverTimestamp(),
+        status: "new",
+      });
       toast.success("Message sent. I'll reply within 48 hours.");
       setForm({ name: "", email: "", message: "" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not send");
+    } finally {
       setLoading(false);
-    }, 600);
+    }
   }
 
   return (
