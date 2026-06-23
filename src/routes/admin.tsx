@@ -78,6 +78,7 @@ function AdminPage() {
       {tab === "posts" && <PostsTab posts={posts} refetch={refetchPosts} fromDb={postsFromDb} />}
       {tab === "roadmap" && <RoadmapTab items={roadmap} refetch={refetchRoadmap} fromDb={roadmapFromDb} />}
       {tab === "users" && <UsersTab />}
+      {tab === "inbox" && <InboxTab />}
       {tab === "settings" && <SettingsTab toolsFromDb={toolsFromDb} postsFromDb={postsFromDb} roadmapFromDb={roadmapFromDb} refetchAll={() => { refetchTools(); refetchPosts(); refetchRoadmap(); }} />}
     </section>
   );
