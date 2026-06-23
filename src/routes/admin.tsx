@@ -654,3 +654,115 @@ function PromoteForm() {
     </div>
   );
 }
+
+/* ---------- INBOX TAB ---------- */
+type ContactRow = { id: string; name?: string; email?: string; message?: string; status?: string; createdAt?: { seconds: number } | null };
+type SubRow = { id: string; email?: string; source?: string; createdAt?: { seconds: number } | null };
+
+function InboxTab() {
+  const [contacts, setContacts] = useState<ContactRow[] | null>(null);
+  const [subs, setSubs] = useState<SubRow[] | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  const load = async () => {
+    try {
+      const [c, n] = await Promise.all([
+        getDocs(collection(db, "contacts")),
+        getDocs(collection(db, "newsletter")),
+      ]);
+      setContacts(c.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<ContactRow, "id">) })).sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0)));
+      setSubs(n.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<SubRow, "id">) })).sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0)));
+    } catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
+  };
+  useEffect(() => { load(); }, []);
+
+  const csv = (rows: SubRow[]) => {
+    const lines = ["email,source,date", ...rows.map((r) => `${r.email ?? ""},${r.source ?? ""},${r.createdAt?.seconds ? new Date(r.createdAt.seconds*1000).toISOString() : ""}`)];
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = "newsletter.csv"; a.click(); URL.revokeObjectURL(url);
+  };
+
+  if (err) return <div className="border-brutal bg-card p-6 shadow-brutal">Error: {err}. Did you publish the Firestore rules from Settings?</div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="grid sm:grid-cols-3 gap-3">
+        <Stat label="Contact messages" value={contacts?.length ?? 0} />
+        <Stat label="Newsletter subs" value={subs?.length ?? 0} />
+        <Stat label="New this week" value={(contacts ?? []).filter((c) => c.createdAt?.seconds && (Date.now() - c.createdAt.seconds*1000) < 7*864e5).length} />
+      </div>
+
+      <div className="border-brutal bg-card shadow-brutal p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-2xl inline-flex items-center gap-2"><Mail className="size-5" /> Contact messages</h2>
+          <button onClick={load} className="border-brutal bg-background px-3 py-1.5 font-bold uppercase text-xs shadow-brutal-sm hover-lift">Refresh</button>
+        </div>
+        {!contacts ? <div className="font-mono">Loading…</div> : contacts.length === 0 ? <p className="font-medium text-muted-foreground">No messages yet.</p> : (
+          <ul className="divide-y-[3px] divide-foreground border-brutal max-h-[500px] overflow-y-auto">
+            {contacts.map((c) => (
+              <li key={c.id} className="p-4 bg-background">
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div>
+                    <div className="font-display text-lg">{c.name ?? "—"}</div>
+                    <a href={`mailto:${c.email}`} className="font-mono text-xs uppercase underline">{c.email}</a>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="font-mono text-[10px] uppercase">{c.createdAt?.seconds ? new Date(c.createdAt.seconds*1000).toLocaleString() : "—"}</div>
+                    <button
+                      onClick={async () => {
+                        if (!confirm("Delete this message?")) return;
+                        try { await deleteDoc(doc(db, "contacts", c.id)); toast.success("Deleted"); load(); }
+                        catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
+                      }}
+                      className="mt-1 border-brutal bg-background px-2 py-1 text-xs uppercase font-bold hover:bg-brand-pink inline-flex items-center gap-1"
+                    ><Trash2 className="size-3" /></button>
+                  </div>
+                </div>
+                <p className="font-medium whitespace-pre-wrap text-sm border-l-4 border-foreground pl-3">{c.message}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div className="border-brutal bg-card shadow-brutal p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-2xl inline-flex items-center gap-2"><Inbox className="size-5" /> Newsletter subscribers</h2>
+          <div className="flex gap-2">
+            <button onClick={() => subs && csv(subs)} disabled={!subs || subs.length === 0} className="border-brutal bg-brand-green px-3 py-1.5 font-bold uppercase text-xs shadow-brutal-sm hover-lift disabled:opacity-50">Export CSV</button>
+            <button onClick={load} className="border-brutal bg-background px-3 py-1.5 font-bold uppercase text-xs shadow-brutal-sm hover-lift">Refresh</button>
+          </div>
+        </div>
+        {!subs ? <div className="font-mono">Loading…</div> : subs.length === 0 ? <p className="font-medium text-muted-foreground">No subscribers yet.</p> : (
+          <div className="overflow-x-auto border-brutal">
+            <table className="w-full text-sm">
+              <thead className="bg-foreground text-background">
+                <tr><th className="text-left p-3 font-display">Email</th><th className="text-left p-3 font-display">Source</th><th className="text-left p-3 font-display">Date</th><th className="p-3"></th></tr>
+              </thead>
+              <tbody>
+                {subs.map((s) => (
+                  <tr key={s.id} className="border-t-[3px] border-foreground bg-background">
+                    <td className="p-3 font-medium"><a href={`mailto:${s.email}`} className="underline">{s.email}</a></td>
+                    <td className="p-3 font-mono text-xs">{s.source ?? "—"}</td>
+                    <td className="p-3 font-mono text-xs">{s.createdAt?.seconds ? new Date(s.createdAt.seconds*1000).toLocaleString() : "—"}</td>
+                    <td className="p-3 text-right">
+                      <button
+                        onClick={async () => {
+                          if (!confirm(`Remove ${s.email}?`)) return;
+                          try { await deleteDoc(doc(db, "newsletter", s.id)); toast.success("Removed"); load(); }
+                          catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
+                        }}
+                        className="border-brutal bg-background px-2 py-1 text-xs uppercase font-bold hover:bg-brand-pink"
+                      ><Trash2 className="size-3" /></button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
