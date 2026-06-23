@@ -2,6 +2,8 @@ import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const schema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
@@ -11,7 +13,7 @@ export function Newsletter({ compact = false }: { compact?: boolean }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const parsed = schema.safeParse({ email });
     if (!parsed.success) {
@@ -20,16 +22,15 @@ export function Newsletter({ compact = false }: { compact?: boolean }) {
     }
     setLoading(true);
     try {
-      const key = "unit-tools-newsletter";
-      const existing = JSON.parse(localStorage.getItem(key) || "[]") as string[];
-      if (existing.includes(parsed.data.email)) {
-        toast.info("You're already subscribed.");
-      } else {
-        existing.push(parsed.data.email);
-        localStorage.setItem(key, JSON.stringify(existing));
-        toast.success("Subscribed! Watch your inbox for new tools.");
-      }
+      await addDoc(collection(db, "newsletter"), {
+        email: parsed.data.email,
+        createdAt: serverTimestamp(),
+        source: typeof window !== "undefined" ? window.location.pathname : "/",
+      });
+      toast.success("Subscribed! Watch your inbox for new tools.");
       setEmail("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not subscribe");
     } finally {
       setLoading(false);
     }
