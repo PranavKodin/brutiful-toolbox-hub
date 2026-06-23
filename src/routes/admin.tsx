@@ -588,6 +588,8 @@ service cloud.firestore {
     match /tools/{slug}    { allow read: if true; allow write: if isAdmin(); }
     match /posts/{slug}    { allow read: if true; allow write: if isAdmin(); }
     match /roadmap/{id}    { allow read: if true; allow write: if isAdmin(); }
+    match /contacts/{id}   { allow create: if true; allow read, update, delete: if isAdmin(); }
+    match /newsletter/{id} { allow create: if true; allow read, delete: if isAdmin(); }
     match /admins/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if isAdmin();
