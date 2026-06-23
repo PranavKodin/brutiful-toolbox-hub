@@ -8,7 +8,7 @@ import { usePosts, savePost, removePost, seedPostsToDb, useRoadmap, saveRoadmapI
 import type { Tool } from "@/lib/tools-data";
 import type { Post } from "@/lib/blog-data";
 import { toast } from "sonner";
-import { Shield, Plus, Trash2, Save, Database, Users, Wrench, Crown, Copy, FileText, Map as MapIcon, Settings as Cog, ShieldOff, Star } from "lucide-react";
+import { Shield, Plus, Trash2, Save, Database, Users, Wrench, Crown, Copy, FileText, Map as MapIcon, Settings as Cog, ShieldOff, Star, Mail, Inbox } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — Tools Lab" }, { name: "robots", content: "noindex" }] }),
