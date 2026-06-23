@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Github, Heart } from "lucide-react";
+import { ArrowRight, Download, Github, Heart } from "lucide-react";
 import * as Icons from "lucide-react";
 import { colorClass, type Tool } from "@/lib/tools-data";
 import { useFavorite } from "@/hooks/use-favorite";
