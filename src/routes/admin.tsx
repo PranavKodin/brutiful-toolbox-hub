@@ -23,6 +23,7 @@ const TABS = [
   { key: "posts", label: "Blog", icon: FileText },
   { key: "roadmap", label: "Roadmap", icon: MapIcon },
   { key: "users", label: "Users", icon: Users },
+  { key: "inbox", label: "Inbox", icon: Inbox },
   { key: "settings", label: "Settings", icon: Cog },
 ] as const;
 
